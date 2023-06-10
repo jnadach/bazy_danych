@@ -18,3 +18,21 @@ connection_string = f'Driver={driver};' \
                     'Encrypt=no;'
 
 connection = pyodbc.connect(connection_string)
+
+connection.execute("CREATE TABLE users (id int identity, name varchar(100), age int)")
+connection.execute("INSERT INTO users (name, age) VALUES ('Andrzej', 29)")
+connection.execute("INSERT INTO users (name, age) VALUES ('Maciej', 25)")
+
+cursor = connection.cursor()
+
+cursor.execute("SELECT * FROM users")
+
+for row, name, age in cursor:
+    print(row)
+    print(name)
+    print(age)
+    print(20*"-")
+
+cursor.close()
+connection.close()
+
