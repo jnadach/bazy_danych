@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from db_connection import connection
-import pyodbc
 import loader
 import sys
 
@@ -44,14 +43,10 @@ class AddNewIngredient(Strategy):
         fiber = input("fiber: ")
         ingredient_type = input("ingredient_type: ")
         with connection.cursor() as cursor:
-            try:
-                cursor.execute("INSERT INTO Igrredients "
-                               "(Names, Calories, Proteins, Fats, Carbs, Fibers, Igrredient_Types) "
-                               "VALUES (?, ?, ?,?,?,?,?)",
-                               (name, calories, protein, fat, carbs, fiber, ingredient_type))
-            except pyodbc.IntegrityError:
-                print("Składnik już istnieje.")
-
+            cursor.execute("INSERT INTO Igrredients "
+                           "(Names, Calories, Proteins, Fats, Carbs, Fibers, Igrredient_Types) "
+                           "VALUES (?, ?, ?,?,?,?,?)",
+                           (name, calories, protein, fat, carbs, fiber, ingredient_type))
 
 
 class TerminateProgram(Strategy):
