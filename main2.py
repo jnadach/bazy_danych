@@ -10,6 +10,7 @@ database_name = 'nadachow'
 database_user = 'nadachow'
 driver = '{ODBC Driver 18 for SQL Server}'
 
+# DOcumentation https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Windows
 connection_string = f'Driver={driver};' \
                     f'SERVER={database_server};' \
                     f'DATABASE={database_name};' \
@@ -23,6 +24,10 @@ cursor = connection.cursor()
 # cursor.execute("CREATE TABLE users (id int identity, name varchar(100), age int)")
 cursor.execute("INSERT INTO users (name, age) VALUES ('Andrzej', 29)")
 cursor.execute("INSERT INTO users (name, age) VALUES ('Maciej', 25)")
+cursor.commit()
+
+cursor.execute("INSERT INTO users (name, age) VALUES ('Smutny Jan', 35)")
+
 
 cursor = cursor.execute("SELECT * FROM users")
 

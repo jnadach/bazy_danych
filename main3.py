@@ -21,26 +21,16 @@ connection_string = f'Driver={driver};' \
 connection = pyodbc.connect(connection_string)
 cursor = connection.cursor()
 
-# cursor.execute("CREATE TABLE users (id int identity, name varchar(100), age int)")
-cursor.execute("INSERT INTO users (name, age) VALUES ('Andrzej', 29)")
-cursor.execute("INSERT INTO users (name, age) VALUES ('Maciej', 25)")
+new_email = input('Proszę podać email: ')
+new_name = input('Proszę podać imię: ')
+
+cursor.execute(f"UPDATE users SET email='{new_email}' WHERE name ='{new_name}'")
 cursor.commit()
 
-cursor.execute("INSERT INTO users (name, age) VALUES ('Smutny Jan', 35)")
-
-
-cursor = cursor.execute("SELECT * FROM users")
-
-# Sposoby pobierania rekordow
-# results = cursor.fetchall()
-# results = cursor.fetchone()
-# results = cursor.fetchmany(5)
-
-for row in cursor:
-    print(row)
+print(f'{cursor.rowcount} row/s was updated.')
 
 cursor.close()
 connection.close()
 
 
-# INSERT, CREATE, DROP, DELETE itp. otwieraja transakcje
+

@@ -1,3 +1,7 @@
+# PRZYKŁAD 'executescript' --> sql injection
+
+
+
 import pyodbc
 from dotenv import load_dotenv
 import os
@@ -21,13 +25,20 @@ connection_string = f'Driver={driver};' \
 connection = pyodbc.connect(connection_string)
 cursor = connection.cursor()
 
-new_email = input('Proszę podać email: ')
+update_sql = []
+
+
 new_name = input('Proszę podać imię: ')
 
-cursor.execute(f"UPDATE users SET email='{new_email}' WHERE name ='{new_name}'")
-cursor.commit()
 
-print(f'{cursor.rowcount} row/s was updated.')
+sql = f"UPDATE users SET email='update@sql.injection' WHERE name ={new_name}"
+
+split_arr = sql.split(';')
+
+for update in split_arr:
+    cursor.execute(update)
+
+cursor.commit()
 
 cursor.close()
 connection.close()

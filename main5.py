@@ -21,10 +21,12 @@ connection_string = f'Driver={driver};' \
 connection = pyodbc.connect(connection_string)
 cursor = connection.cursor()
 
-new_email = input('Proszę podać email: ')
-new_name = input('Proszę podać imię: ')
 
-cursor.execute(f"UPDATE users SET email='{new_email}' WHERE name ='{new_name}'")
+new_name = input('Proszę podać imię: ')
+new_email = input('Proszę podać email: ')
+
+#Lepiej uzywac placeholderow ? niz f-stringow
+cursor.execute(f"UPDATE users SET email= ? WHERE name = ?", (new_email, new_name))
 cursor.commit()
 
 print(f'{cursor.rowcount} row/s was updated.')

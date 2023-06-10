@@ -18,21 +18,24 @@ connection_string = f'Driver={driver};' \
                     'Encrypt=no;'
 
 connection = pyodbc.connect(connection_string)
-
-connection.execute("CREATE TABLE users (id int identity, name varchar(100), age int)")
-connection.execute("INSERT INTO users (name, age) VALUES ('Andrzej', 29)")
-connection.execute("INSERT INTO users (name, age) VALUES ('Maciej', 25)")
-
 cursor = connection.cursor()
 
-cursor.execute("SELECT * FROM users")
+# cursor.execute("CREATE TABLE users (id int identity, name varchar(100), age int)")
+cursor.execute("INSERT INTO users (name, age) VALUES ('Andrzej', 29)")
+cursor.execute("INSERT INTO users (name, age) VALUES ('Maciej', 25)")
 
-for row, name, age in cursor:
+cursor = cursor.execute("SELECT * FROM users")
+
+# Sposoby pobierania rekordow
+# results = cursor.fetchall()
+# results = cursor.fetchone()
+# results = cursor.fetchmany(5)
+
+for row in cursor:
     print(row)
-    print(name)
-    print(age)
-    print(20*"-")
 
 cursor.close()
 connection.close()
 
+
+# INSERT, CREATE, DROP, DELETE itp. otwieraja transakcje
