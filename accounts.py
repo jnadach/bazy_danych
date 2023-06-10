@@ -1,6 +1,7 @@
 import pyodbc
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 
 load_dotenv()
 
@@ -10,7 +11,7 @@ database_name = 'nadachow'
 database_user = 'nadachow'
 driver = '{ODBC Driver 18 for SQL Server}'
 
-# DOcumentation https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Windows
+# Documentation https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-SQL-Server-from-Windows
 connection_string = f'Driver={driver};' \
                     f'SERVER={database_server};' \
                     f'DATABASE={database_name};' \
@@ -22,6 +23,10 @@ connection = pyodbc.connect(connection_string)
 
 
 class Account:
+
+    @staticmethod
+    def current_time():
+        return datetime.now()
 
     def __init__(self, name: str, open_balance: float = 0.0):
         with connection.cursor() as cursor:
@@ -36,17 +41,21 @@ class Account:
         if amount > 0:
             with connection.cursor() as cursor:
                 self._balance += amount
-                print(f"{amount} deposited to Account {self.name}")
                 cursor.execute(f"UPDATE accounts SET account_balance = ? WHERE account_id = ?",
                                (self._balance, self.id))
+                cursor.execute("INSERT INTO transactions (account_id, transation_time, amount) VALUES (?,?,?)",
+                               (self.id, Account.current_time(), amount))
+                print(f"{amount} deposited to Account {self.name}")
 
     def withdraw(self, amount: float):
         if 0 < amount <= self._balance:
             with connection.cursor() as cursor:
                 self._balance -= amount
-                print(f"{amount} withdraw from account {self.name}")
                 cursor.execute(f"UPDATE accounts SET account_balance = ? WHERE account_id = ?",
                                (self._balance, self.id))
+                cursor.execute("INSERT INTO transactions (account_id, transation_time, amount) VALUES (?,?,?)",
+                               (self.id, Account.current_time(), -amount))
+                print(f"{amount} withdraw from account {self.name}")
 
     def show_balance(self):
         print(f"Account {self.name} balance: {round(self._balance, 2)}.")
